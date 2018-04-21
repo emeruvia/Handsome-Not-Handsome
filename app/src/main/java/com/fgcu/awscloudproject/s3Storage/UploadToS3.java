@@ -36,7 +36,7 @@ public class UploadToS3 extends AppCompatActivity {
 
         TransferObserver uploadObserver =
                 transferUtility.upload(
-                        "uploads/" + imageFileName,
+                        imageFileName,
                         new File(mCurrentPhotoPath));
 
         // Attach a listener to the observer to get state update and progress notifications
