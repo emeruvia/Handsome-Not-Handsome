@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 //            Bundle extras = data.getExtras();
 //            Bitmap imageBitmap = (Bitmap) extras.get("data");
 //            pictureImageView.setImageBitmap(imageBitmap);
+            loadImageFromCamera();
             UploadToS3 uploadImages = new UploadToS3(imageFileName, mCurrentPhotoPath, getApplicationContext());
             uploadImages.uploadWithTransferUtility();
         }
@@ -104,5 +105,15 @@ public class MainActivity extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    private void loadImageFromCamera() {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            Bitmap image = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+            pictureImageView.setImageBitmap(image);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }
