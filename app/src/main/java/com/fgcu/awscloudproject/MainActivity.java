@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             uploadImages.uploadWithTransferUtility();
         }
     }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -109,7 +110,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadImageFromCamera() {
         try {
+            int targetW = pictureImageView.getWidth();
+            int targetH = pictureImageView.getHeight();
+            System.out.println("Height and Width"+targetH + targetH);
             BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            int photoW = options.outWidth;
+            int photoH = options.outHeight;
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = scaleFactor;
+            options.inPurgeable = true;
             Bitmap image = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
             pictureImageView.setImageBitmap(image);
         } catch (NullPointerException e) {
