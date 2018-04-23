@@ -51,13 +51,15 @@ public class DetectLabels extends AppCompatActivity {
         DetectLabelsRequest request = new DetectLabelsRequest()
                 .withImage(new Image()
                         .withS3Object(new S3Object()
-                                .withName(photoName).withBucket(bucketName)));
+                                .withName(photoName)
+                                .withBucket(bucketName)))
+                .withMinConfidence(75F);
 
         DetectFacesRequest facesRequest = new DetectFacesRequest()
                 .withImage(new Image()
                         .withS3Object(new S3Object()
                                 .withName(photoName).withBucket(bucketName)));
-        
+
         try {
             DetectLabelsResult result = amazonRekognitionClient.detectLabels(request);
             List<Label> labels = result.getLabels();
