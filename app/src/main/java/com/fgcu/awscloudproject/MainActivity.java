@@ -21,6 +21,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.fgcu.awscloudproject.rekognition.DetectLabels;
 import com.fgcu.awscloudproject.s3Storage.UploadToS3;
 
 import java.io.File;
@@ -83,9 +84,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            pictureImageView.setImageBitmap(imageBitmap);
             loadImageFromCamera();
             UploadToS3 uploadImages = new UploadToS3(imageFileName, mCurrentPhotoPath, getApplicationContext());
             uploadImages.uploadWithTransferUtility();
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        imageFileName = "JPEG_" + timeStamp + "_";
+        imageFileName = "JPEG_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -112,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             int targetW = pictureImageView.getWidth();
             int targetH = pictureImageView.getHeight();
-            System.out.println("Height and Width"+targetH + targetH);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             int photoW = options.outWidth;

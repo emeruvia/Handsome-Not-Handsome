@@ -13,4 +13,4 @@
 *.ap_
 #AWS
 awsconfiguration.json
-app/src/main/res/values/hidden_strings.xml
+AWSConstants.java

@@ -10,6 +10,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.fgcu.awscloudproject.rekognition.DetectLabels;
 
 import java.io.File;
 
@@ -47,6 +48,9 @@ public class UploadToS3 extends AppCompatActivity {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
                     Log.d("S3Upload", "Image has been uploaded successfully");
+                    //Triggers the rekognition to get the labels
+                    DetectLabels rekognitionLabels = new DetectLabels(imageFileName, context);
+                    rekognitionLabels.runAsyncTask();
                 }
             }
 
