@@ -12,14 +12,12 @@ import com.amazonaws.services.rekognition.model.DetectFacesRequest;
 import com.amazonaws.services.rekognition.model.DetectFacesResult;
 import com.amazonaws.services.rekognition.model.DetectLabelsRequest;
 import com.amazonaws.services.rekognition.model.DetectLabelsResult;
-import com.amazonaws.services.rekognition.model.Emotion;
 import com.amazonaws.services.rekognition.model.FaceDetail;
 import com.amazonaws.services.rekognition.model.Image;
 import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.rekognition.model.S3Object;
 import com.fgcu.awscloudproject.AWSConstants;
-
-import java.util.List;
+import com.fgcu.awscloudproject.dataObject.UserData;
 
 import java.util.List;
 
@@ -32,8 +30,8 @@ public class DetectLabels extends AppCompatActivity {
     private String bucketName = "aws-cloud-project";
     private Context context;
     private AWSCredentials credentials;
-    private AmazonRekognitionClient amazonRekognitionClient;
     private AWSConstants constants = new AWSConstants();
+
 
     public DetectLabels(String photoName, Context context) {
         this.photoName = photoName;
@@ -46,39 +44,34 @@ public class DetectLabels extends AppCompatActivity {
                 constants.identityPool(),
                 constants.awsRegion() // Region
         );
-        amazonRekognitionClient = new AmazonRekognitionClient(credentialsProvider);
+        AmazonRekognitionClient amazonRekognitionClient = new AmazonRekognitionClient(credentialsProvider);
 
         DetectLabelsRequest request = new DetectLabelsRequest()
                 .withImage(new Image()
                         .withS3Object(new S3Object()
                                 .withName(photoName)
-                                .withBucket(bucketName)))
-                .withMinConfidence(75F);
+                                .withBucket(bucketName)));
 
         DetectFacesRequest facesRequest = new DetectFacesRequest()
                 .withImage(new Image()
                         .withS3Object(new S3Object()
                                 .withName(photoName).withBucket(bucketName)));
 
+        UserData userData = new UserData();
         try {
             DetectLabelsResult result = amazonRekognitionClient.detectLabels(request);
             List<Label> labels = result.getLabels();
 
             DetectFacesResult facesResult = amazonRekognitionClient.detectFaces(facesRequest);
-            List<FaceDetail> faceLabels = facesResult.getFaceDetails();
-
+            StringBuilder stringBuilder = new StringBuilder();
             System.out.println("Detected labels for " + photoName);
             for (Label label : labels) {
+                stringBuilder.append(label.getName()).append(" " + label.getConfidence().toString()).append("\n");
                 System.out.println(label.getName() + ": " + label.getConfidence().toString());
             }
-            System.out.println("Detected Faces Labels for " + photoName);
-            for (FaceDetail faceDetail : faceLabels) {
-                System.out.print(faceDetail.getAgeRange() + " ");
-                System.out.print(faceDetail.getBeard() + " ");
-                System.out.print(faceDetail.getConfidence() + " ");
-                System.out.print(faceDetail.getEmotions() + " ");
-                System.out.print(faceDetail.getGender() + "\n");
-            }
+            System.out.println(result);
+            System.out.println(facesResult.getFaceDetails());
+            userData.setUserLabels(stringBuilder);
         } catch (AmazonClientException e) {
             e.printStackTrace();
         }
