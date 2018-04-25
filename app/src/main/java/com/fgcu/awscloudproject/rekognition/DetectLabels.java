@@ -102,33 +102,45 @@ public class DetectLabels extends AppCompatActivity {
             Label human = null;
 
             for (Label label : labels) {
-                if(label.getName().equals("Human")){
+                if (label.getName().equals("Human")) {
                     human = label;
                 }
-                if(label.getName().equals("Suit")){
+                if (label.getName().equals("Suit")) {
                     suit = label;
                 }
-                if(label.getName().equals("Tuxedo")){
+                if (label.getName().equals("Tuxedo")) {
                     tuxedo = label;
                 }
-                if(label.getName().equals("Smile")){
+                if (label.getName().equals("Smile")) {
                     smile = label;
                 }
 
             }
 
-
-            if(human.getConfidence() > 50 && suit != null && tuxedo != null && smile != null){
-                if(suit.getConfidence() > 50 || tuxedo.getConfidence() > 50){
-                    if(smile.getConfidence() > 50){
-                        Toast.makeText(context, " Extra Handsome", Toast.LENGTH_SHORT).show();
+            if (human != null) {
+                if (human.getConfidence() > 50) {
+                    if (suit != null && tuxedo != null) {
+                        if (suit.getConfidence() > 50 || tuxedo.getConfidence() > 50) {
+                            if (smile != null) {
+                                if (smile.getConfidence() > 50) {
+                                    Toast.makeText(context, " Extra Handsome", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else{
+                            Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else{
-                        Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
                 }
             }
             else{
@@ -137,6 +149,5 @@ public class DetectLabels extends AppCompatActivity {
             super.onPostExecute(aVoid);
         }
     }
-
 }
 
