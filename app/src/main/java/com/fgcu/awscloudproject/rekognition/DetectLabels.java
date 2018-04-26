@@ -21,6 +21,8 @@ import com.amazonaws.services.rekognition.model.S3Object;
 import com.fgcu.awscloudproject.AWSConstants;
 import com.fgcu.awscloudproject.dynamoDB.UploadToTable;
 import com.fgcu.awscloudproject.s3Storage.DownloadFromS3;
+import com.fgcu.awscloudproject.s3Storage.ReUploadToS3;
+import com.fgcu.awscloudproject.s3Storage.UploadToS3;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -145,16 +147,31 @@ public class DetectLabels extends AppCompatActivity {
             } else {
                 dataModelResponse = "No Person Detected";
                 Toast.makeText(context, "No person detected", Toast.LENGTH_LONG).show();
-
             }
 
             System.out.println(photoName + "\t" + dataModelResponse);
+            //Upload to specified folder
+            ReUploadToS3 reUploadToS3 = new ReUploadToS3(photoName, mCurrentPhotoPath, context, dynamoDBMapper);
+            if (dataModelResponse.equals("No Person Detected")) {
+                reUploadToS3.setImageFileName("Not-Applicable/" + photoName);
+                System.out.println(reUploadToS3.getImageFileName());
+                reUploadToS3.uploadWithTransferUtility();
+            } else if (dataModelResponse.equals("Handsome")) {
+                reUploadToS3.setImageFileName("Handsome/" + photoName);
+                System.out.println(reUploadToS3.getImageFileName());
+                reUploadToS3.uploadWithTransferUtility();
+            } else if (dataModelResponse.equals("Not So Handsome")) {
+                reUploadToS3.setImageFileName("Not-so-Handsome/" + photoName);
+                System.out.println(reUploadToS3.getImageFileName());
+                reUploadToS3.uploadWithTransferUtility();
+            }
+
             //Write to database
             UploadToTable uploadToDatabase = new UploadToTable(dynamoDBMapper, photoName, dataModelResponse);
             uploadToDatabase.addToTable();
             //Download updated file
-            DownloadFromS3 downloadFromS3 = new DownloadFromS3(photoName, mCurrentPhotoPath, context);
-            downloadFromS3.downloadWithTransferUtility();
+//            DownloadFromS3 downloadFromS3 = new DownloadFromS3(photoName, mCurrentPhotoPath, context);
+//            downloadFromS3.downloadWithTransferUtility();
             super.onPostExecute(aVoid);
         }
     }

@@ -15,14 +15,14 @@ import com.fgcu.awscloudproject.rekognition.DetectLabels;
 
 import java.io.File;
 
-public class UploadToS3 extends AppCompatActivity {
+public class ReUploadToS3 extends AppCompatActivity {
 
     private String imageFileName;
     private String mCurrentPhotoPath;
     private Context context;
     private DynamoDBMapper dynamoDBMapper;
 
-    public UploadToS3(String imageFileName, String mCurrentPhotoPath, Context context, DynamoDBMapper dynamoDBMapper) {
+    public ReUploadToS3(String imageFileName, String mCurrentPhotoPath, Context context, DynamoDBMapper dynamoDBMapper) {
         this.imageFileName = imageFileName;
         this.mCurrentPhotoPath = mCurrentPhotoPath;
         this.context = context;
@@ -57,10 +57,7 @@ public class UploadToS3 extends AppCompatActivity {
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
-                    Log.d("S3Upload", "Image has been uploaded successfully");
-                    //Triggers the rekognition to get the labels
-                    DetectLabels rekognitionLabels = new DetectLabels(imageFileName, context, dynamoDBMapper, mCurrentPhotoPath);
-                    rekognitionLabels.runAsyncTask();
+                    Log.d("S3ReUpload", "Image has been uploaded successfully");
                 }
             }
 
@@ -69,14 +66,14 @@ public class UploadToS3 extends AppCompatActivity {
                 float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                 int percentDone = (int) percentDonef;
 
-                Log.d("YourActivity", "ID:" + id + " bytesCurrent: " + bytesCurrent
+                Log.d("S3ReUpload", "ID:" + id + " bytesCurrent: " + bytesCurrent
                         + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
             }
 
             @Override
             public void onError(int id, Exception ex) {
                 // Handle errors
-                Log.d("S3UploadError", ex.toString());
+                Log.d("S3ReUploadError", ex.toString());
             }
 
         });
