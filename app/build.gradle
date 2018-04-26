@@ -31,5 +31,5 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-s3:2.6.18'
     implementation 'com.amazonaws:aws-android-sdk-cognito:2.6.18'
     implementation 'com.amazonaws:aws-android-sdk-rekognition:2.6.18'
-//    implementation 'com.amazonaws:aws-java-sdk-rekognition:1.11.315'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.18'
 }
