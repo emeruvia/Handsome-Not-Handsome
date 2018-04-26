@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.models.nosql.HandsomeNotHandsomeDO;
 
-public class UploadToTable extends AppCompatActivity{
+public class UploadToTable extends AppCompatActivity {
 
     private DynamoDBMapper dynamoDBMapper;
     private String photoName;
@@ -20,7 +20,14 @@ public class UploadToTable extends AppCompatActivity{
     public void addToTable() {
         final HandsomeNotHandsomeDO newPicture = new HandsomeNotHandsomeDO();
 
-        newPicture.setImageName(photoName);
+        if (dataModelResponse.equals("Handsome")) {
+            newPicture.setImageName(photoName + "H");
+        } else if (dataModelResponse.equals("Not So Handsome")) {
+            newPicture.setImageName(photoName + "N");
+        } else {
+            newPicture.setImageName(photoName + "X");
+        }
+
         newPicture.setDataModelResponse(dataModelResponse);
 
         new Thread(new Runnable() {

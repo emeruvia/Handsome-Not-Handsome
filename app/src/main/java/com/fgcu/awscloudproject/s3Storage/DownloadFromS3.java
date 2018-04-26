@@ -11,25 +11,24 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.fgcu.awscloudproject.rekognition.DetectLabels;
 
 import java.io.File;
 
-public class UploadToS3 extends AppCompatActivity {
+public class DownloadFromS3 extends AppCompatActivity {
 
     private String imageFileName;
     private String mCurrentPhotoPath;
     private Context context;
-    private DynamoDBMapper dynamoDBMapper;
 
-    public UploadToS3(String imageFileName, String mCurrentPhotoPath, Context context, DynamoDBMapper dynamoDBMapper) {
+    public DownloadFromS3(String imageFileName, String mCurrentPhotoPath, Context context) {
         this.imageFileName = imageFileName;
         this.mCurrentPhotoPath = mCurrentPhotoPath;
         this.context = context;
-        this.dynamoDBMapper = dynamoDBMapper;
     }
 
-    public void uploadWithTransferUtility() {
+    public void downloadWithTransferUtility() {
+
+//        TransferUtility transferUtility = new TransferUtility()
 
         TransferUtility transferUtility =
                 TransferUtility.builder()
@@ -38,51 +37,48 @@ public class UploadToS3 extends AppCompatActivity {
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                         .build();
 
-        TransferObserver uploadObserver =
-                transferUtility.upload(
-                        imageFileName,
+        TransferObserver downloadObserver =
+                transferUtility.download(
+                        "labled-githubpic.jpg",
                         new File(mCurrentPhotoPath));
 
         // Attach a listener to the observer to get state update and progress notifications
-        uploadObserver.setTransferListener(new TransferListener() {
+        downloadObserver.setTransferListener(new TransferListener() {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
-                    Log.d("S3Upload", "Image has been uploaded successfully");
-                    //Triggers the rekognition to get the labels
-                    DetectLabels rekognitionLabels = new DetectLabels(imageFileName, context, dynamoDBMapper, mCurrentPhotoPath);
-                    rekognitionLabels.runAsyncTask();
+                    Log.d("S3Download", "Completed!");
                 }
             }
 
             @Override
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-                int percentDone = (int) percentDonef;
+                float percentDonef = ((float)bytesCurrent/(float)bytesTotal) * 100;
+                int percentDone = (int)percentDonef;
 
-                Log.d("YourActivity", "ID:" + id + " bytesCurrent: " + bytesCurrent
-                        + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
+                Log.d("MainActivity", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
             }
 
             @Override
             public void onError(int id, Exception ex) {
                 // Handle errors
-                Log.d("S3UploadError", ex.toString());
+                Log.d("S3DownloadError", ex.toString());
             }
 
         });
 
         // If you prefer to poll for the data, instead of attaching a
         // listener, check for the state and progress in the observer.
-        if (TransferState.COMPLETED == uploadObserver.getState()) {
+        if (TransferState.COMPLETED == downloadObserver.getState()) {
             // Handle a completed upload.
-            Log.d("S3Completed", "YEAY");
+            Log.d("S3Download", "Completed!");
         }
 
-        Log.d("YourActivity", "Bytes Transferrred: " + uploadObserver.getBytesTransferred());
-        Log.d("YourActivity", "Bytes Total: " + uploadObserver.getBytesTotal());
+        Log.d("S3Download", "Bytes Transferrred: " + downloadObserver.getBytesTransferred());
+        Log.d("S3Download", "Bytes Total: " + downloadObserver.getBytesTotal());
     }
+
 
 }

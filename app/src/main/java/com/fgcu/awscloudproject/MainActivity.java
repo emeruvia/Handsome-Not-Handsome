@@ -18,6 +18,7 @@ import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.fgcu.awscloudproject.s3Storage.DownloadFromS3;
 import com.fgcu.awscloudproject.s3Storage.UploadToS3;
 
 import java.io.File;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 .dynamoDBClient(dynamoDBClient)
                 .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                 .build();
+
     }
 
     /**
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d("ImagePath", mCurrentPhotoPath);
         return image;
     }
 

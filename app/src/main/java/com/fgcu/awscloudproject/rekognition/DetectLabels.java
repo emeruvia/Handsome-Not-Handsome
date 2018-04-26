@@ -20,6 +20,7 @@ import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.rekognition.model.S3Object;
 import com.fgcu.awscloudproject.AWSConstants;
 import com.fgcu.awscloudproject.dynamoDB.UploadToTable;
+import com.fgcu.awscloudproject.s3Storage.DownloadFromS3;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,13 +38,14 @@ public class DetectLabels extends AppCompatActivity {
     private String bucketName = "aws-cloud-project";
     private Context context;
     private AWSConstants constants = new AWSConstants();
-    private String dataModelResponse;
+    private String mCurrentPhotoPath;
     private DynamoDBMapper dynamoDBMapper;
 
-    public DetectLabels(String photoName, Context context, DynamoDBMapper dynamoDBMapper) {
+    public DetectLabels(String photoName, Context context, DynamoDBMapper dynamoDBMapper, String mCurrentPhotoPath) {
         this.photoName = photoName;
         this.context = context;
         this.dynamoDBMapper = dynamoDBMapper;
+        this.mCurrentPhotoPath = mCurrentPhotoPath;
     }
 
     private void init() {
@@ -119,6 +121,7 @@ public class DetectLabels extends AppCompatActivity {
 
             }
 
+            String dataModelResponse;
             if (human != null && human.getConfidence() > 30) {
                 if ((tuxedo != null) && (tuxedo.getConfidence() > 30)) {
                     dataModelResponse = "Handsome";
@@ -149,7 +152,9 @@ public class DetectLabels extends AppCompatActivity {
             //Write to database
             UploadToTable uploadToDatabase = new UploadToTable(dynamoDBMapper, photoName, dataModelResponse);
             uploadToDatabase.addToTable();
-
+            //Download updated file
+            DownloadFromS3 downloadFromS3 = new DownloadFromS3(photoName, mCurrentPhotoPath, context);
+            downloadFromS3.downloadWithTransferUtility();
             super.onPostExecute(aVoid);
         }
     }
