@@ -100,6 +100,8 @@ public class DetectLabels extends AppCompatActivity {
             Label tuxedo = null;
             Label smile = null;
             Label human = null;
+            Label dressShirt = null;
+            Label glasses = null;
 
             for (Label label : labels) {
                 if(label.getName().equals("Human")){
@@ -114,25 +116,31 @@ public class DetectLabels extends AppCompatActivity {
                 if(label.getName().equals("Smile")){
                     smile = label;
                 }
+                if(label.getName().equals("Dress Shirt")){
+                    dressShirt = label;
+                }
+                if (label.getName().equals("Glasses")){
+
+                }
 
             }
-
-
-            if(human.getConfidence() > 50 && suit != null && tuxedo != null && smile != null){
-                if(suit.getConfidence() > 50 || tuxedo.getConfidence() > 50){
-                    if(smile.getConfidence() > 50){
-                        Toast.makeText(context, " Extra Handsome", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
-                    }
+            
+            if(human!= null && human.getConfidence() > 30){
+                if((tuxedo!=null) && (tuxedo.getConfidence() > 30)){
+                    Toast.makeText(context,"Handsome just because of the tux", Toast.LENGTH_LONG).show();
+                } else if((suit!=null) && (suit.getConfidence() > 30)){
+                    Toast.makeText(context,"Handsome just because of the suit", Toast.LENGTH_LONG).show();
+                } else if((dressShirt!=null) && (dressShirt.getConfidence() > 30)){
+                    Toast.makeText(context,"Handsome just cause of dress shirt", Toast.LENGTH_LONG).show();
+                } else if((smile!=null) && (smile.getConfidence() > 30)){
+                    Toast.makeText(context,"Handsome because you smiling", Toast.LENGTH_LONG).show();
+                }else if((glasses!=null) && (glasses.getConfidence() > 30)){
+                    Toast.makeText(context,"Handsome because of the glasses", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context,"Not so handsome", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else{
-                Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(context,"No person detected", Toast.LENGTH_LONG).show();
             }
             super.onPostExecute(aVoid);
         }
