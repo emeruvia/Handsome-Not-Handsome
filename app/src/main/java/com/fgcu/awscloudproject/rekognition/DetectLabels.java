@@ -35,9 +35,8 @@ public class DetectLabels extends AppCompatActivity {
     private String photoName;
     private String bucketName = "aws-cloud-project";
     private Context context;
-    private AWSCredentials credentials;
     private AWSConstants constants = new AWSConstants();
-
+    private String dataModelResponse;
 
     public DetectLabels(String photoName, Context context) {
         this.photoName = photoName;
@@ -104,18 +103,19 @@ public class DetectLabels extends AppCompatActivity {
             Label glasses = null;
 
             for (Label label : labels) {
-                if(label.getName().equals("Human")){
+                if (label.getName().equals("Human")) {
                     human = label;
                 }
-                if(label.getName().equals("Suit")){
+                if (label.getName().equals("Suit")) {
                     suit = label;
                 }
-                if(label.getName().equals("Tuxedo")){
+                if (label.getName().equals("Tuxedo")) {
                     tuxedo = label;
                 }
-                if(label.getName().equals("Smile")){
+                if (label.getName().equals("Dimples")) {
                     smile = label;
                 }
+<<<<<<< HEAD
                 if(label.getName().equals("Dress Shirt")){
                     dressShirt = label;
                 }
@@ -141,10 +141,51 @@ public class DetectLabels extends AppCompatActivity {
                 }
             } else{
                 Toast.makeText(context,"No person detected", Toast.LENGTH_LONG).show();
+=======
+
+            }
+
+            if (human != null) {
+                if (human.getConfidence() > 50) {
+                    if (smile != null) {
+                        if (smile.getConfidence() > 50) {
+                            if (suit != null && tuxedo != null) {
+                                if (suit.getConfidence() > 50 || tuxedo.getConfidence() > 50) {
+                                    Toast.makeText(context, " Extra Handsome", Toast.LENGTH_SHORT).show();
+                                    System.out.println("Extra Handsome");
+                                } else {
+                                    Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
+                                    System.out.println("Handsome");
+                                    dataModelResponse = "Handsome";
+                                }
+                            } else {
+                                Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
+                                System.out.println("Handsome");
+                                dataModelResponse = "Handsome";
+                            }
+                        } else {
+                            Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
+                            System.out.println("Not Handsome");
+                            dataModelResponse = "Not Handsome";
+                        }
+                    } else {
+                        Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
+                        System.out.println("Not Handsome");
+                        dataModelResponse = "Not Handsome";
+                    }
+                } else {
+                    Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
+                    System.out.println("Not Applicable");
+                    dataModelResponse = "Not Applicable";
+                }
+            } else {
+                Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
+                System.out.println("Not Applicable");
+                dataModelResponse = "Not Applicable";
+>>>>>>> 6f7d93302ec28330117ea08ca003b2d79f241bc3
             }
             super.onPostExecute(aVoid);
         }
     }
-
 }
 

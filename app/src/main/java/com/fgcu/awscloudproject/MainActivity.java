@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.fgcu.awscloudproject.s3Storage.UploadToS3;
 
 import java.io.File;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView pictureImageView;
     private String mCurrentPhotoPath;
     private String imageFileName;
+    private DynamoDBMapper dynamoDBMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("YourMainActivity", "AWSMobileClient is instantiated and you are connected to AWS!");
             }
         }).execute();
+
+        // Instantiate a AmazonDynamoDBMapperClient
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
     }
 
     /**
