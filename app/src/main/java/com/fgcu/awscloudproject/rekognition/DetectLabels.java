@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.services.rekognition.AmazonRekognitionClient;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
@@ -37,10 +38,12 @@ public class DetectLabels extends AppCompatActivity {
     private Context context;
     private AWSConstants constants = new AWSConstants();
     private String dataModelResponse;
+        private DynamoDBMapper dynamoDBMapper;
 
-    public DetectLabels(String photoName, Context context) {
+    public DetectLabels(String photoName, Context context, DynamoDBMapper dynamoDBMapper) {
         this.photoName = photoName;
         this.context = context;
+        this.dynamoDBMapper = dynamoDBMapper;
     }
 
     private void init() {
@@ -115,7 +118,6 @@ public class DetectLabels extends AppCompatActivity {
                 if (label.getName().equals("Dimples")) {
                     smile = label;
                 }
-<<<<<<< HEAD
                 if(label.getName().equals("Dress Shirt")){
                     dressShirt = label;
                 }
@@ -141,48 +143,7 @@ public class DetectLabels extends AppCompatActivity {
                 }
             } else{
                 Toast.makeText(context,"No person detected", Toast.LENGTH_LONG).show();
-=======
 
-            }
-
-            if (human != null) {
-                if (human.getConfidence() > 50) {
-                    if (smile != null) {
-                        if (smile.getConfidence() > 50) {
-                            if (suit != null && tuxedo != null) {
-                                if (suit.getConfidence() > 50 || tuxedo.getConfidence() > 50) {
-                                    Toast.makeText(context, " Extra Handsome", Toast.LENGTH_SHORT).show();
-                                    System.out.println("Extra Handsome");
-                                } else {
-                                    Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
-                                    System.out.println("Handsome");
-                                    dataModelResponse = "Handsome";
-                                }
-                            } else {
-                                Toast.makeText(context, "Handsome", Toast.LENGTH_SHORT).show();
-                                System.out.println("Handsome");
-                                dataModelResponse = "Handsome";
-                            }
-                        } else {
-                            Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
-                            System.out.println("Not Handsome");
-                            dataModelResponse = "Not Handsome";
-                        }
-                    } else {
-                        Toast.makeText(context, "Not Handsome", Toast.LENGTH_SHORT).show();
-                        System.out.println("Not Handsome");
-                        dataModelResponse = "Not Handsome";
-                    }
-                } else {
-                    Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
-                    System.out.println("Not Applicable");
-                    dataModelResponse = "Not Applicable";
-                }
-            } else {
-                Toast.makeText(context, "Not Applicable", Toast.LENGTH_SHORT).show();
-                System.out.println("Not Applicable");
-                dataModelResponse = "Not Applicable";
->>>>>>> 6f7d93302ec28330117ea08ca003b2d79f241bc3
             }
             super.onPostExecute(aVoid);
         }

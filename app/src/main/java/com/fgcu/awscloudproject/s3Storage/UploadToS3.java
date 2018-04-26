@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -19,11 +20,13 @@ public class UploadToS3 extends AppCompatActivity {
     private String imageFileName;
     private String mCurrentPhotoPath;
     private Context context;
+    private DynamoDBMapper dynamoDBMapper;
 
-    public UploadToS3(String imageFileName, String mCurrentPhotoPath, Context context) {
+    public UploadToS3(String imageFileName, String mCurrentPhotoPath, Context context, DynamoDBMapper dynamoDBMapper) {
         this.imageFileName = imageFileName;
         this.mCurrentPhotoPath = mCurrentPhotoPath;
         this.context = context;
+        this.dynamoDBMapper = dynamoDBMapper;
     }
 
     public void uploadWithTransferUtility() {
@@ -49,7 +52,7 @@ public class UploadToS3 extends AppCompatActivity {
                     // Handle a completed upload.
                     Log.d("S3Upload", "Image has been uploaded successfully");
                     //Triggers the rekognition to get the labels
-                    DetectLabels rekognitionLabels = new DetectLabels(imageFileName, context);
+                    DetectLabels rekognitionLabels = new DetectLabels(imageFileName, context, dynamoDBMapper);
                     rekognitionLabels.runAsyncTask();
                 }
             }
@@ -57,7 +60,7 @@ public class UploadToS3 extends AppCompatActivity {
             @Override
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                 float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-                int percentDone = (int)percentDonef;
+                int percentDone = (int) percentDonef;
 
                 Log.d("YourActivity", "ID:" + id + " bytesCurrent: " + bytesCurrent
                         + " bytesTotal: " + bytesTotal + " " + percentDone + "%");

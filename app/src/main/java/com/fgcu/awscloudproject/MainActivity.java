@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             loadImageFromCamera();
-            UploadToS3 uploadImages = new UploadToS3(imageFileName, mCurrentPhotoPath, getApplicationContext());
+            UploadToS3 uploadImages = new UploadToS3(imageFileName, mCurrentPhotoPath, getApplicationContext(), dynamoDBMapper);
             uploadImages.uploadWithTransferUtility();
         }
     }
